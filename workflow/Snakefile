@@ -3,7 +3,7 @@ import pandas as pd
 
 configfile: "config/config.yaml"
 
-localrules: all, alevin_all
+localrules: all, all_alevin
 
 envvars:
     "PATH"
