@@ -48,9 +48,14 @@ rule alevin_adt:
     log: stderr="logs/alevin_adt_{sample}.log"
     params:
         index=config['alevin']['adt_index'],
+        feature_start=config['alevin']['feature_start'],
+        feature_length=config['alevin']['feature_length'],
+        end=config['alevin']['end'],
+        umi_length=config['alevin']['umi_length'],
+        barcode_length=config['alevin']['barcode_length'],
         threads=config['alevin']['threads']
-    conda:
-        "envs/alevin.yaml"
+    #conda:
+    #    "envs/alevin.yaml"
     threads: config['alevin']['threads']
     resources:
         mem_mb=config['alevin']['memory_gb'] * 1024
@@ -58,8 +63,9 @@ rule alevin_adt:
         """
         salmon alevin -l ISR -i {params.index} \
         -1 {input.fastq1} -2 {input.fastq2} \
-        -o {output} -p {params.threads} --citeseq --featureStart 0 \
-        --featureLength 15 \
+        -o {output} -p {params.threads} --citeseq \
+        --featureStart {params.feature_start} --featureLength {params.feature_length} \
+        --end {params.end} --umiLength {params.umi_length} --barcodeLength {params.barcode_length} \
         2> {log.stderr}
         """
 
@@ -72,9 +78,14 @@ rule alevin_hto:
     log: stderr="logs/alevin_hto_{sample}.log"
     params:
         index=config['alevin']['hto_index'],
+        feature_start=config['alevin']['feature_start'],
+        feature_length=config['alevin']['feature_length'],
+        end=config['alevin']['end'],
+        umi_length=config['alevin']['umi_length'],
+        barcode_length=config['alevin']['barcode_length'],
         threads=config['alevin']['threads']
-    conda:
-        "envs/alevin.yaml"
+    #conda:
+    #    "envs/alevin.yaml"
     threads: config['alevin']['threads']
     resources:
         mem_mb=config['alevin']['memory_gb'] * 1024
@@ -82,8 +93,10 @@ rule alevin_hto:
         """
         salmon alevin -l ISR -i {params.index} \
         -1 {input.fastq1} -2 {input.fastq2} \
-        -o {output} -p 16 --citeseq --featureStart 0 \
-        --featureLength 15 --naiveEqclass \
+        -o {output} -p {params.threads} --citeseq \
+        --featureStart {params.feature_start} --featureLength {params.feature_length} \
+        --end {params.end} --umiLength {params.umi_length} --barcodeLength {params.barcode_length} \
+        --naiveEqclass \
         2> {log.stderr}
         """
 

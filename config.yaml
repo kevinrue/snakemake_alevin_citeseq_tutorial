@@ -9,6 +9,16 @@ alevin:
   adt_index: /ifs/mirror/alevin/adt_index
   # HTO index
   hto_index: /ifs/mirror/alevin/hto_index
+  # starting index of the feature barcode on Read2 (--featureStart)
+  feature_start: 0
+  # length of the feature barcode (--featureLength)
+  feature_length: 15
+  # Cell-Barcodes end (5 or 3) location (--end)
+  end: 5
+  # umi length parameter for unknown protocol (--umiLength)
+  umi_length: 10
+  # barcode length parameter for unknown protocol(--barcodeLength)
+  barcode_length: 16
   # misc
   threads: 16
   memory_gb: 64
