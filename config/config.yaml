@@ -13,6 +13,8 @@ alevin:
   feature_start: 0
   # length of the feature barcode (--featureLength)
   feature_length: 15
+  # close upper bound on expected number of cells (--expectCells)
+  expect_cells: 35000
   # Cell-Barcodes end (5 or 3) location (--end)
   end: 5
   # umi length parameter for unknown protocol (--umiLength)
