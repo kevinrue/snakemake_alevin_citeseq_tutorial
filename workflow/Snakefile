@@ -102,7 +102,7 @@ rule alevin_hto:
         2> {log.stderr}
         """
 
-rule alevin_all:
+rule all_alevin:
     input:
         expand("results/alevin/{sample}_rna", sample=samples['sample']),
         expand("results/alevin/{sample}_adt", sample=samples['sample']),
