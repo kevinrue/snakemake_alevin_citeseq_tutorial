@@ -1,0 +1,6 @@
+name: alevin
+channels:
+- bioconda
+- conda-forge
+dependencies:
+- salmon

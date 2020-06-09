@@ -3,8 +3,12 @@ samples: data/samples.tsv
 alevin:
   # transcript to gene map tsv file (--tgMap)
   tgmap: /ifs/mirror/alevin/txp2gene.tsv
-  # salmon index
-  index: /ifs/mirror/alevin/salmon_partial_sa_index
+  # Selective alignment index
+  sa_index: /ifs/mirror/alevin/salmon_partial_sa_index
+  # ADT index
+  adt_index: /ifs/mirror/alevin/adt_index
+  # HTO index
+  hto_index: /ifs/mirror/alevin/hto_index
   # misc
   threads: 16
   memory_gb: 64
