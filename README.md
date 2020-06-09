@@ -84,7 +84,8 @@ Edit `config.yaml` to the appropriate settings.
 
 # Running the pipeline
 
+Call `snakemake` with arguments appropriate to your configuration, e.g.
+
 ```
-cd /ifs/data/pipelines/kevin/alevin-features
-snakemake
+snakemake --profile drmaa
 ```
