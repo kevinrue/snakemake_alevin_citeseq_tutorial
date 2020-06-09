@@ -20,6 +20,8 @@ Following instructions at <https://combine-lab.github.io/alevin-tutorial/2020/al
 
 ## Step 1. Index the reference sequences
 
+Reference sequences are reused across across projects and should be downloaded to a central location on the system, e.g.
+
 ```
 mkdir /ifs/mirror/alevin
 cd /ifs/mirror/alevin
@@ -30,6 +32,8 @@ grep "^>" salmon_partial_sa_index/gentrome.fa | cut -d " " -f 1,7 --output-delim
 ```
 
 ## Step 2. Index the antibody sequences
+
+Similarly to reference sequences, download to a central location.
 
 ```
 cd /ifs/mirror/alevin
@@ -47,7 +51,7 @@ salmon index -t hto.tsv -i hto_index --features -k7
 
 ## Step 3. Download the raw RNA & antibody sequencing data
 
-In the working directory.
+Data for the tutorial, download in a subdirectory of the working directory.
 
 ```
 mkdir data
@@ -75,7 +79,7 @@ Edit the TAB-separated file `data/samples.tsv` that contains the following colum
 
 ```
 cd data
-nano samples.tsv
+vim config/samples.tsv
 ```
 
 ## Pipeline settings

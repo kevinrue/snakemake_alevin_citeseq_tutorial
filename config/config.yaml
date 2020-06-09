@@ -1,4 +1,4 @@
-samples: data/samples.tsv
+samples: config/samples.tsv
 
 alevin:
   # transcript to gene map tsv file (--tgMap)

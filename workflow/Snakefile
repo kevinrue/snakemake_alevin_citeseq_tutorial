@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-configfile: "config.yaml"
+configfile: "config/config.yaml"
 
 localrules: all, alevin_all
 
@@ -12,14 +12,14 @@ samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
 
 rule all:
     input:
-        "alevin/.done"
+        "results/alevin/.done"
 
 rule alevin_gene:
     input:
         fastq1=expand("data/{sample}_R1.fastq.gz", sample=samples['sample']),
         fastq2=expand("data/{sample}_R2.fastq.gz", sample=samples['sample']),
     output:
-        directory("alevin/{sample}_rna")
+        directory("results/alevin/{sample}_rna")
     log: stderr="logs/alevin_rna_{sample}.log"
     params:
         index=config['alevin']['sa_index'],
@@ -44,7 +44,7 @@ rule alevin_adt:
         fastq1=expand("data/{sample}-ADT_R1.fastq.gz", sample=samples['sample']),
         fastq2=expand("data/{sample}-ADT_R2.fastq.gz", sample=samples['sample']),
     output:
-        directory("alevin/{sample}_adt")
+        directory("results/alevin/{sample}_adt")
     log: stderr="logs/alevin_adt_{sample}.log"
     params:
         index=config['alevin']['adt_index'],
@@ -74,7 +74,7 @@ rule alevin_hto:
         fastq1=expand("data/{sample}-HTO_R1.fastq.gz", sample=samples['sample']),
         fastq2=expand("data/{sample}-HTO_R2.fastq.gz", sample=samples['sample']),
     output:
-        directory("alevin/{sample}_hto")
+        directory("results/alevin/{sample}_hto")
     log: stderr="logs/alevin_hto_{sample}.log"
     params:
         index=config['alevin']['hto_index'],
@@ -102,10 +102,10 @@ rule alevin_hto:
 
 rule alevin_all:
     input:
-        expand("alevin/{sample}_rna", sample=samples['sample']),
-        expand("alevin/{sample}_adt", sample=samples['sample']),
-        expand("alevin/{sample}_hto", sample=samples['sample'])
+        expand("results/alevin/{sample}_rna", sample=samples['sample']),
+        expand("results/alevin/{sample}_adt", sample=samples['sample']),
+        expand("results/alevin/{sample}_hto", sample=samples['sample'])
     output:
-        "alevin/.done"
+        "results/alevin/.done"
     shell:
         """touch {output}"""
