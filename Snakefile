@@ -45,7 +45,6 @@ rule alevin_adt:
         directory("alevin/{sample}_adt")
     params:
         index=config['alevin']['adt_index'],
-        tgmap=config['alevin']['tgmap'],
         threads=config['alevin']['threads']
     conda:
         "envs/alevin.yaml"
@@ -54,17 +53,39 @@ rule alevin_adt:
         mem_mb=config['alevin']['memory_gb'] * 1024
     shell:
         """
-        echo $PATH > alevin_adt.path &&
         salmon alevin -l ISR -i {params.index} \
         -1 {input.fastq1} -2 {input.fastq2} \
         -o {output} -p {params.threads} --citeseq --featureStart 0 \
         --featureLength 15
         """
 
+rule alevin_hto:
+    input:
+        fastq1=expand("data/{sample}-HTO_R1.fastq.gz", sample=samples['sample']),
+        fastq2=expand("data/{sample}-HTO_R2.fastq.gz", sample=samples['sample']),
+    output:
+        directory("alevin/{sample}_hto")
+    params:
+        index=config['alevin']['hto_index'],
+        threads=config['alevin']['threads']
+    conda:
+        "envs/alevin.yaml"
+    threads: config['alevin']['threads']
+    resources:
+        mem_mb=config['alevin']['memory_gb'] * 1024
+    shell:
+        """
+        salmon alevin -l ISR -i {params.index} \
+        -1 {input.fastq1} -2 {input.fastq2} \
+        -o {output} -p 16 --citeseq --featureStart 0 \
+        --featureLength 15 --naiveEqclass
+        """
+
 rule alevin_all:
     input:
         expand("alevin/{sample}_rna", sample=samples['sample']),
-        expand("alevin/{sample}_adt", sample=samples['sample'])
+        expand("alevin/{sample}_adt", sample=samples['sample']),
+        expand("alevin/{sample}_hto", sample=samples['sample'])
     output:
         "alevin/.done"
     shell:
