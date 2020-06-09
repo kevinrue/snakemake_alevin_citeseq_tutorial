@@ -20,7 +20,6 @@ rule alevin_rna:
         fastq2=expand("data/{sample}_R2.fastq.gz", sample=samples['sample']),
     output:
         directory("results/alevin/{sample}_rna")
-    log: stderr="logs/alevin_rna_{sample}.log"
     params:
         index=config['alevin']['sa_index'],
         tgmap=config['alevin']['tgmap'],
@@ -31,6 +30,7 @@ rule alevin_rna:
     threads: config['alevin']['threads']
     resources:
         mem_mb=config['alevin']['memory_gb'] * 1024
+    log: stderr="logs/alevin_rna_{sample}.log"
     shell:
         """
         salmon alevin -l ISR -i {params.index} \
@@ -47,7 +47,6 @@ rule alevin_adt:
         fastq2=expand("data/{sample}-ADT_R2.fastq.gz", sample=samples['sample']),
     output:
         directory("results/alevin/{sample}_adt")
-    log: stderr="logs/alevin_adt_{sample}.log"
     params:
         index=config['alevin']['adt_index'],
         feature_start=config['alevin']['feature_start'],
@@ -61,6 +60,7 @@ rule alevin_adt:
     threads: config['alevin']['threads']
     resources:
         mem_mb=config['alevin']['memory_gb'] * 1024
+    log: stderr="logs/alevin_adt_{sample}.log"
     shell:
         """
         salmon alevin -l ISR -i {params.index} \
@@ -77,7 +77,6 @@ rule alevin_hto:
         fastq2=expand("data/{sample}-HTO_R2.fastq.gz", sample=samples['sample']),
     output:
         directory("results/alevin/{sample}_hto")
-    log: stderr="logs/alevin_hto_{sample}.log"
     params:
         index=config['alevin']['hto_index'],
         feature_start=config['alevin']['feature_start'],
@@ -91,6 +90,7 @@ rule alevin_hto:
     threads: config['alevin']['threads']
     resources:
         mem_mb=config['alevin']['memory_gb'] * 1024
+    log: stderr="logs/alevin_hto_{sample}.log"
     shell:
         """
         salmon alevin -l ISR -i {params.index} \
