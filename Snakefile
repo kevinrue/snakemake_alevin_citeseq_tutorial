@@ -2,10 +2,9 @@
 import pandas as pd
 
 configfile: "config.yaml"
+localrules: all, alevin_all
 
 samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
-
-print(config)
 
 rule all:
     input:
