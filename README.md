@@ -6,13 +6,22 @@
 
 Feature Barcoding based Single-Cell Quantification with alevin
 
-# Set up
+# Initial setup
+
+Clone the pipeline repository to initialise your working directory.
+
+```
+git clone git@github.com:kevinrue/pipeline_alevin_citeseq.git
+```
+
+# Set up (tutorial)
 
 Following instructions at <https://combine-lab.github.io/alevin-tutorial/2020/alevin-features/>.
 
 ## Step 1. Index the reference sequences
 
 ```
+mkdir /ifs/mirror/alevin
 cd /ifs/mirror/alevin
 wget -nv http://refgenomes.databio.org/v2/asset/hg38/salmon_partial_sa_index/archive?tag=default
 mv archive?tag=default salmon_partial_sa_index__default.tgz
@@ -23,12 +32,14 @@ grep "^>" salmon_partial_sa_index/gentrome.fa | cut -d " " -f 1,7 --output-delim
 ## Step 2. Index the antibody sequences
 
 ```
+cd /ifs/mirror/alevin
 wget --content-disposition  -nv https://ftp.ncbi.nlm.nih.gov/geo/series/GSE128nnn/GSE128639/suppl/GSE128639_MNC_ADT_Barcodes.csv.gz
 zcat GSE128639_MNC_ADT_Barcodes.csv.gz | awk -F "," '{print $1"\t"$4}' | tail -n +2 > adt.tsv
 salmon index -t adt.tsv -i adt_index --features -k7
 ```
 
 ```
+cd /ifs/mirror/alevin
 wget --content-disposition  -nv https://ftp.ncbi.nlm.nih.gov/geo/series/GSE128nnn/GSE128639/suppl/GSE128639_MNC_HTO_Barcodes.csv.gz
 zcat GSE128639_MNC_HTO_Barcodes.csv.gz | awk -F "," '{print $1"\t"$4}' | sed 's/Hashtag /Hashtag_/g' | tail -n +2 > hto.tsv
 salmon index -t hto.tsv -i hto_index --features -k7
@@ -36,7 +47,11 @@ salmon index -t hto.tsv -i hto_index --features -k7
 
 ## Step 3. Download the raw RNA & antibody sequencing data
 
+In the working directory.
+
 ```
+mkdir data
+cd data
 # RNA experiment
 wget --content-disposition -nv https://sra-pub-src-2.s3.amazonaws.com/SRR8758323/MNC-A_R1.fastq.gz && 
 wget --content-disposition -nv https://sra-pub-src-2.s3.amazonaws.com/SRR8758323/MNC-A_R2.fastq.gz &&
@@ -50,17 +65,26 @@ wget --content-disposition -nv https://sra-pub-src-2.s3.amazonaws.com/SRR8758327
 wget --content-disposition -nv https://sra-pub-src-2.s3.amazonaws.com/SRR8758327/MNC-A-HTO_R2.fastq.gz
 ```
 
-## Step 4. Quantify with alevin
+# Configuration
+
+## Samples and metadata
+
+Edit the TAB-separated file `data/samples.tsv` that contains the following column(s) for each sample:
+
+- `sample`, a unique sample identifiers found in the FASTQ file names (e.g., `{sample}_R1.fastq.gz`, `{sample}-HTO_R1.fastq.gz`, `{sample}-ADT_R1.fastq.gz`)
 
 ```
-salmon alevin -l ISR -i /ifs/mirror/alevin/salmon_partial_sa_index \
--1 data/MNC-A_R1.fastq.gz -2 data/MNC-A_R2.fastq.gz \
--o alevin_rna -p 16 --tgMap /ifs/mirror/alevin/txp2gene.tsv \
---chromium --dumpFeatures
+cd data
+nano samples.tsv
 ```
 
-### Sample metadata
+## Pipeline settings
 
-Create a file `data/samples.tsv` that contains the following columns:
+Edit `config.yaml` to the appropriate settings.
 
-- sample, unique sample identifiers found in the library file name, i.e. {sample}_library.csv
+# Running the pipeline
+
+```
+cd /ifs/data/pipelines/kevin/alevin-features
+snakemake
+```
