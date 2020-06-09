@@ -110,4 +110,4 @@ rule all_alevin:
     output:
         "results/alevin/.done"
     shell:
-        """touch {output}"""
+        "touch {output}"
