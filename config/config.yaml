@@ -1,14 +1,17 @@
-samples: config/samples.tsv
+# This file should contain everything to configure the workflow on a global scale.
+# In case of sample based data, it should be complemented by a samples.tsv file that contains
+# one row per sample. It can be parsed easily via pandas.
+samples: "config/samples.tsv"
 
 alevin:
   # transcript to gene map tsv file (--tgMap)
-  tgmap: /ifs/mirror/alevin/txp2gene.tsv
+  tgmap: "/ifs/mirror/alevin/txp2gene.tsv"
   # Selective alignment index
-  sa_index: /ifs/mirror/alevin/salmon_partial_sa_index
+  sa_index: "/ifs/mirror/alevin/salmon_partial_sa_index"
   # ADT index
-  adt_index: /ifs/mirror/alevin/adt_index
+  adt_index: "/ifs/mirror/alevin/adt_index"
   # HTO index
-  hto_index: /ifs/mirror/alevin/hto_index
+  hto_index: "/ifs/mirror/alevin/hto_index"
   # starting index of the feature barcode on Read2 (--featureStart)
   feature_start: 0
   # length of the feature barcode (--featureLength)
@@ -23,4 +26,4 @@ alevin:
   barcode_length: 16
   # resources
   threads: 16
-  memory_gb: 20
+  memory_gb: 2
