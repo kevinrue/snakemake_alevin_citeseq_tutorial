@@ -21,6 +21,6 @@ alevin:
   umi_length: 10
   # barcode length parameter for unknown protocol(--barcodeLength)
   barcode_length: 16
-  # misc
+  # resources
   threads: 16
-  memory_gb: 64
+  memory_gb: 20
