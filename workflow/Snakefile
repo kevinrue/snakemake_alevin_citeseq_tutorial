@@ -3,7 +3,7 @@ import pandas as pd
 
 configfile: "config/config.yaml"
 
-localrules: all, all_alevin
+localrules: all
 
 envvars:
     "PATH"
@@ -12,7 +12,9 @@ samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
 
 rule all:
     input:
-        "results/alevin/.done"
+        expand("results/alevin/{sample}_rna", sample=samples['sample']),
+        expand("results/alevin/{sample}_adt", sample=samples['sample']),
+        expand("results/alevin/{sample}_hto", sample=samples['sample'])
 
 rule alevin_rna:
     input:
@@ -101,13 +103,3 @@ rule alevin_hto:
         --naiveEqclass \
         2> {log.stderr}
         """
-
-rule all_alevin:
-    input:
-        expand("results/alevin/{sample}_rna", sample=samples['sample']),
-        expand("results/alevin/{sample}_adt", sample=samples['sample']),
-        expand("results/alevin/{sample}_hto", sample=samples['sample'])
-    output:
-        "results/alevin/.done"
-    shell:
-        "touch {output}"
