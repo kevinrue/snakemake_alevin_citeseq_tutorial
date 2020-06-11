@@ -26,4 +26,4 @@ alevin:
   barcode_length: 16
   # resources
   threads: 16
-  memory_gb: 2
+  memory_per_cpu: 2G
