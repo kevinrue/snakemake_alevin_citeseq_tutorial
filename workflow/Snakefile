@@ -5,101 +5,107 @@ configfile: "config/config.yaml"
 
 localrules: all
 
-envvars:
-    "PATH"
-
 samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
 
 rule all:
     input:
-        expand("results/alevin/{sample}_rna", sample=samples['sample']),
-        expand("results/alevin/{sample}_adt", sample=samples['sample']),
-        expand("results/alevin/{sample}_hto", sample=samples['sample'])
+        expand("results/alevin/{sample}/rna/alevin/quants_mat.gz", sample=samples['sample']),
+        expand("results/alevin/{sample}/adt/alevin/quants_mat.gz", sample=samples['sample']),
+        expand("results/alevin/{sample}/hto/alevin/quants_mat.gz", sample=samples['sample'])
+
 
 rule alevin_rna:
     input:
         fastq1=expand("data/{sample}_R1.fastq.gz", sample=samples['sample']),
         fastq2=expand("data/{sample}_R2.fastq.gz", sample=samples['sample']),
     output:
-        directory("results/alevin/{sample}_rna")
+        "results/alevin/{sample}/rna/alevin/quants_mat.gz"
     params:
+        output_folder=lambda wildcards, output: output[0].replace("/alevin/quants_mat.gz", ""),
         index=config['alevin']['sa_index'],
         tgmap=config['alevin']['tgmap'],
-        expect_cells=config['alevin']['expect_cells'],
+        extra_options=config['alevin']['rna_options'],
         threads=config['alevin']['threads']
-    conda:
-        "envs/alevin.yaml"
+    #conda:
+    #    "envs/alevin.yaml"
     threads: config['alevin']['threads']
     resources:
         mem_free=config['alevin']['memory_per_cpu']
-    log: stderr="logs/alevin_rna_{sample}.log"
+    log: stderr="logs/alevin/{sample}/rna.log"
     shell:
         """
+        which salmon > logs/salmon_path &&
+        cp /ifs/home/kevin/.config/snakemake/drmaa/config.yaml logs/drmaa_config.yaml &&
         salmon alevin -l ISR -i {params.index} \
         -1 {input.fastq1} -2 {input.fastq2} \
-        -o {output} -p {params.threads} --tgMap {params.tgmap} \
-        --expectCells {params.expect_cells} \
+        -o {params.output_folder} -p {params.threads} --tgMap {params.tgmap} \
         --chromium --dumpFeatures \
+        {params.extra_options} \
         2> {log.stderr}
         """
+
 
 rule alevin_adt:
     input:
         fastq1=expand("data/{sample}-ADT_R1.fastq.gz", sample=samples['sample']),
         fastq2=expand("data/{sample}-ADT_R2.fastq.gz", sample=samples['sample']),
     output:
-        directory("results/alevin/{sample}_adt")
+        "results/alevin/{sample}/adt/alevin/quants_mat.gz"
     params:
+        output_folder=lambda wildcards, output: output[0].replace("/alevin/quants_mat.gz", ""),
         index=config['alevin']['adt_index'],
-        feature_start=config['alevin']['feature_start'],
-        feature_length=config['alevin']['feature_length'],
         end=config['alevin']['end'],
         umi_length=config['alevin']['umi_length'],
         barcode_length=config['alevin']['barcode_length'],
+        feature_start=config['alevin']['feature_start'],
+        feature_length=config['alevin']['feature_length'],
         threads=config['alevin']['threads']
     #conda:
     #    "envs/alevin.yaml"
     threads: config['alevin']['threads']
     resources:
         mem_free=config['alevin']['memory_per_cpu']
-    log: stderr="logs/alevin_adt_{sample}.log"
+    log: stderr="logs/alevin/{sample}/adt.log"
     shell:
         """
         salmon alevin -l ISR -i {params.index} \
         -1 {input.fastq1} -2 {input.fastq2} \
-        -o {output} -p {params.threads} --citeseq \
-        --featureStart {params.feature_start} --featureLength {params.feature_length} \
         --end {params.end} --umiLength {params.umi_length} --barcodeLength {params.barcode_length} \
+        -o {params.output_folder} -p {params.threads} --citeseq \
+        --featureStart {params.feature_start} --featureLength {params.feature_length} \
         2> {log.stderr}
         """
+
 
 rule alevin_hto:
     input:
         fastq1=expand("data/{sample}-HTO_R1.fastq.gz", sample=samples['sample']),
         fastq2=expand("data/{sample}-HTO_R2.fastq.gz", sample=samples['sample']),
     output:
-        directory("results/alevin/{sample}_hto")
+        "results/alevin/{sample}/hto/alevin/quants_mat.gz"
     params:
+        output_folder=lambda wildcards, output: output[0].replace("/alevin/quants_mat.gz", ""),
         index=config['alevin']['hto_index'],
-        feature_start=config['alevin']['feature_start'],
-        feature_length=config['alevin']['feature_length'],
         end=config['alevin']['end'],
         umi_length=config['alevin']['umi_length'],
         barcode_length=config['alevin']['barcode_length'],
+        feature_start=config['alevin']['feature_start'],
+        feature_length=config['alevin']['feature_length'],
         threads=config['alevin']['threads']
     #conda:
     #    "envs/alevin.yaml"
     threads: config['alevin']['threads']
     resources:
         mem_free=config['alevin']['memory_per_cpu']
-    log: stderr="logs/alevin_hto_{sample}.log"
+    log: stderr="logs/alevin/{sample}/hto.log"
     shell:
         """
         salmon alevin -l ISR -i {params.index} \
         -1 {input.fastq1} -2 {input.fastq2} \
-        -o {output} -p {params.threads} --citeseq \
-        --featureStart {params.feature_start} --featureLength {params.feature_length} \
+        -o {params.output_folder} -p {params.threads} --citeseq \
+        --featureStart {params.feature_start} \
         --end {params.end} --umiLength {params.umi_length} --barcodeLength {params.barcode_length} \
+        --featureLength {params.feature_length} \
         --naiveEqclass \
         2> {log.stderr}
         """
