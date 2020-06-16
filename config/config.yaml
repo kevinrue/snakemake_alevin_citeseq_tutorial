@@ -27,4 +27,4 @@ alevin:
   rna_options: "--expectCells 35000"
   # resources
   threads: 16
-  memory_per_cpu: 5G
+  memory_per_cpu: 5
